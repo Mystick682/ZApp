@@ -3,87 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Elite Data Services</title>
+    <title>Login | ZApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfdfe; }
-        .tab-active { color: #0052FF; border-bottom: 3px solid #0052FF; }
-        .input-group:focus-within { border-color: #0052FF; background: white; box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.05); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .animate-toast { animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .dark body { background-color: #0B1120 !important; color: #F1F5F9 !important; }
-        .dark .bg-white, .dark aside, .dark nav, .dark header { background-color: #111827 !important; border-color: #1F2937 !important; color: #F1F5F9 !important; }
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ECFDF5;
+            min-height: 100vh;
+            margin: 0; padding: 0;
+        }
+
+        /* ── Blob bg ── */
+        @keyframes blob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(8px,-12px) scale(1.06)} }
+        .blob-a { animation: blob 8s ease-in-out infinite; }
+        .blob-b { animation: blob 11s ease-in-out infinite reverse; }
+
+        /* ── Input group ── */
+        .input-group {
+            display: flex; align-items: center;
+            border: 1.5px solid #E4ECE7;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 0 16px;
+            transition: border-color .15s, box-shadow .15s;
+            box-shadow: 0 2px 8px rgba(6,78,59,.04);
+        }
+        .input-group:focus-within {
+            border-color: #0EA968;
+            box-shadow: 0 0 0 3px rgba(14,169,104,.10);
+            background: #ffffff;
+        }
+        .input-group input {
+            width: 100%; padding: 14px 12px;
+            background: transparent; outline: none;
+            font-family: inherit; font-size: 14px;
+            font-weight: 600; color: #064E3B;
+        }
+        .input-group input::placeholder { color: #c4cde0; font-weight: 500; }
+
+        /* ── Tab active ── */
+        .tab-active { color: #0EA968; border-bottom: 3px solid #0EA968; }
+
+        /* ── Dark mode ── */
+        .dark body                  { background-color: #0A130F !important; }
+        .dark .login-card           { background-color: #101914 !important; border-color: #1C2E24 !important; }
+        .dark .input-group          { background-color: #152019 !important; border-color: #1C2E24 !important; }
+        .dark .input-group:focus-within { border-color: #0EA968 !important; box-shadow: 0 0 0 3px rgba(14,169,104,.2) !important; }
+        .dark .input-group input    { color: #E4ECE7 !important; }
+        .dark h2, .dark h3          { color: #ffffff !important; }
+        .dark .text-slate-400       { color: #7C9388 !important; }
+        .dark .text-slate-500       { color: #7C9388 !important; }
+        .dark .border-slate-100     { border-color: #1C2E24 !important; }
+        .dark .tab-inactive         { color: #3d5a4c !important; }
+        .dark #forgotModal .bg-white { background-color: #101914 !important; border-color: #1C2E24 !important; }
+        .dark #forgotModal h3        { color: #ffffff !important; }
+        .dark #forgotModal input     { background-color: #152019 !important; border-color: #1C2E24 !important; color: #E4ECE7 !important; }
+        .dark label                  { color: #7C9388 !important; }
+        .dark .side-panel            { display: none; }
     </style>
+    <script src="theme.js"></script>
 </head>
-<body class="text-[#081B4B] antialiased">
+<body class="antialiased">
 
-    <!-- FORGOT PASSWORD MODAL -->
+    <!-- ── Forgot Password Modal ── -->
     <div id="forgotModal" class="fixed inset-0 z-[100] flex items-center justify-center p-6 hidden">
-        <div class="fixed inset-0 bg-[#081B4B]/60 backdrop-blur-sm"></div>
-        <div class="bg-white dark:bg-[#111827] w-full max-w-sm rounded-[32px] p-8 relative z-10 shadow-2xl border border-slate-100 dark:border-slate-800 text-center">
-            <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="help-circle" class="w-8 h-8 text-[#0052FF]"></i>
+        <div class="fixed inset-0 bg-[#064E3B]/60 backdrop-blur-sm"></div>
+        <div class="bg-white w-full max-w-sm rounded-[32px] p-8 relative z-10 shadow-2xl border border-slate-100 text-center">
+            <div class="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-5">
+                <i data-lucide="help-circle" class="w-8 h-8 text-[#0EA968]"></i>
             </div>
-            <h3 class="text-xl font-black mb-2 dark:text-white">Reset Password</h3>
-            <p class="text-slate-400 text-xs font-medium mb-8">Enter your email to receive a password reset link.</p>
-            
-            <input type="email" id="resetEmail" class="w-full p-4 mb-6 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none focus:border-[#0052FF]" placeholder="Enter your email">
+            <h3 class="text-xl font-black mb-1 uppercase tracking-widest">Reset Password</h3>
+            <p class="text-slate-400 text-[10px] font-bold mb-8 uppercase tracking-widest">Enter your email to receive a reset link</p>
 
-            <div class="flex flex-col gap-3">
-                <button onclick="handleResetRequest()" id="resetBtn" class="w-full bg-[#0052FF] text-white py-4 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-all">Send Link</button>
-                <button onclick="closeForgotModal()" class="w-full py-3 text-slate-400 font-bold text-xs uppercase tracking-widest">Back to Login</button>
+            <div class="input-group mb-6">
+                <i data-lucide="mail" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                <input type="email" id="resetEmail" placeholder="Enter your email">
             </div>
+
+            <button onclick="handleResetRequest()" id="resetBtn"
+                class="w-full bg-[#0EA968] text-white py-4 rounded-full font-black text-sm shadow-lg active:scale-95 transition-all mb-2">
+                Send Reset Link
+            </button>
+            <button onclick="closeForgotModal()"
+                class="w-full py-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                Back to Login
+            </button>
         </div>
     </div>
 
-    <div class="min-h-screen flex items-center justify-center p-6 lg:p-12">
-        <div class="w-full max-w-[440px]">
-            <div class="bg-white p-8 lg:p-10 rounded-[32px] shadow-2xl shadow-blue-900/5 border border-slate-50">
-                
-                <div class="text-center mb-10">
-                    <div class="w-12 h-12 bg-[#0052FF] rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-blue-200">
-                        <i data-lucide="zap" class="w-7 h-7 fill-current"></i>
+    <!-- ── Page layout ── -->
+    <div class="min-h-screen flex">
+
+        <!-- Left panel — decorative (desktop only) -->
+        <div class="side-panel hidden lg:flex flex-col justify-between w-[45%] bg-gradient-to-br from-[#0EA968] to-[#0B7A4A] p-12 relative overflow-hidden">
+            <!-- Blobs -->
+            <div class="blob-a absolute -top-20 -right-16 w-72 h-72 bg-white/10 rounded-full"></div>
+            <div class="blob-b absolute -bottom-16 -left-12 w-56 h-56 bg-white/10 rounded-full"></div>
+
+            <!-- Logo -->
+            <div class="relative z-10 flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
+                </div>
+                <span class="text-xl font-extrabold italic text-white tracking-tight">ZApp</span>
+            </div>
+
+            <!-- Middle content -->
+            <div class="relative z-10 space-y-6">
+                <h2 class="text-4xl font-black text-white leading-tight tracking-tight">
+                    The fastest way<br>to manage your<br>digital life.
+                </h2>
+                <p class="text-emerald-100 font-medium leading-relaxed text-base max-w-xs">
+                    Buy data, pay bills, top up airtime and more — all from one secure dashboard.
+                </p>
+
+                <!-- Floating stat cards -->
+                <div class="flex gap-4 pt-4">
+                    <div class="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 flex items-center gap-3">
+                        <i data-lucide="users" class="w-5 h-5 text-white"></i>
+                        <div>
+                            <p class="text-white font-black text-base leading-none">10K+</p>
+                            <p class="text-emerald-100 text-[10px] font-bold uppercase tracking-wider mt-0.5">Users</p>
+                        </div>
                     </div>
-                    <h2 class="text-3xl font-extrabold mb-2">Welcome Back 👋</h2>
-                    <p class="text-slate-400 text-sm font-medium">Enter your credentials to continue</p>
+                    <div class="bg-white/15 backdrop-blur-sm rounded-2xl px-5 py-4 flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-white"></i>
+                        <div>
+                            <p class="text-white font-black text-base leading-none">99.9%</p>
+                            <p class="text-emerald-100 text-[10px] font-bold uppercase tracking-wider mt-0.5">Uptime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom tagline -->
+            <p class="relative z-10 text-emerald-200 text-xs font-bold uppercase tracking-widest">
+                © 2026 ZApp · Fast. Secure. Reliable.
+            </p>
+        </div>
+
+        <!-- Right panel — form -->
+        <div class="flex-1 flex items-center justify-center p-6 lg:p-12">
+            <div class="w-full max-w-[420px]">
+
+                <!-- Mobile logo -->
+                <div class="flex items-center justify-center gap-3 mb-8 lg:hidden">
+                    <div class="w-10 h-10 bg-[#0EA968] rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                    </div>
+                    <span class="text-xl font-extrabold italic text-[#064E3B] tracking-tight">ZApp</span>
                 </div>
 
-                <div class="flex border-b border-slate-100 mb-8 text-center">
-                    <div class="flex-1 pb-3 text-sm font-bold tab-active cursor-pointer">Login</div>
-                    <a href="register.html" class="flex-1 pb-3 text-sm font-bold text-slate-300">Register</a>
+                <div class="login-card bg-white rounded-[32px] shadow-xl shadow-emerald-900/5 border border-slate-100 p-8 lg:p-10">
+
+                    <!-- Heading -->
+                    <div class="text-center mb-8">
+                        <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="zap" class="w-7 h-7 text-[#0EA968] fill-current"></i>
+                        </div>
+                        <h2 class="text-3xl font-extrabold mb-1 text-[#032B20]">Welcome Back 👋</h2>
+                        <p class="text-slate-400 text-sm font-medium">Enter your credentials to continue</p>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex border-b border-slate-100 mb-8 text-center">
+                        <div class="flex-1 pb-3 text-sm font-black tab-active cursor-pointer">Login</div>
+                        <a href="register.html" class="tab-inactive flex-1 pb-3 text-sm font-bold text-slate-300">Register</a>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="loginForm" class="space-y-5">
+
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                            <div class="input-group">
+                                <i data-lucide="mail" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                                <input type="email" id="email" required placeholder="Enter your email">
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center px-1">
+                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Password</label>
+                                <button type="button" onclick="openForgotModal()"
+                                    class="text-[10px] font-black text-[#0EA968] uppercase tracking-wider hover:text-emerald-700 transition-colors">
+                                    Forgot?
+                                </button>
+                            </div>
+                            <div class="input-group">
+                                <i data-lucide="lock" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                                <input type="password" id="password" required placeholder="••••••••">
+                                <button type="button" onclick="togglePasswordVisibility()" class="focus:outline-none ml-2">
+                                    <i id="eyeIcon" data-lucide="eye-off" class="w-5 h-5 text-slate-300 hover:text-[#0EA968] transition-colors"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" id="loginBtn"
+                            class="w-full bg-[#0EA968] text-white py-4 rounded-full font-black text-sm shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all active:scale-[0.98] uppercase tracking-widest mt-2">
+                            Login
+                        </button>
+
+                    </form>
+
+                    <!-- Register link -->
+                    <p class="text-center text-xs font-bold text-slate-400 mt-6">
+                        Don't have an account?
+                        <a href="register.html" class="text-[#0EA968] font-black hover:text-emerald-700 transition-colors ml-1">Sign Up Free</a>
+                    </p>
+
                 </div>
-
-                <form id="loginForm" class="space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Email Address</label>
-                        <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all">
-                            <i data-lucide="mail" class="w-5 h-5 text-slate-300"></i>
-                            <input type="email" id="email" required class="w-full p-4 bg-transparent outline-none text-sm font-medium" placeholder="Enter your email">
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between px-1">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em]">Password</label>
-                            <!-- Click calls openForgotModal() -->
-                            <button type="button" onclick="openForgotModal()" class="text-[11px] font-bold text-[#0052FF] uppercase tracking-wider">Forgot?</button>
-                        </div>
-                        <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all relative">
-                            <i data-lucide="lock" class="w-5 h-5 text-slate-300"></i>
-                            <input type="password" id="password" required class="w-full p-4 bg-transparent outline-none text-sm font-medium" placeholder="••••••••">
-                            <button type="button" onclick="togglePasswordVisibility()" class="focus:outline-none">
-                                <i id="eyeIcon" data-lucide="eye-off" class="w-5 h-5 text-slate-300 hover:text-[#0052FF] transition-colors"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="loginBtn" class="w-full bg-[#0052FF] text-white py-4.5 rounded-2xl font-extrabold text-lg shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all active:scale-[0.98]">
-                        Login
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -101,48 +237,44 @@
             lucide.createIcons();
         }
 
-        function openForgotModal() { document.getElementById('forgotModal').classList.remove('hidden'); }
+        function openForgotModal()  { document.getElementById('forgotModal').classList.remove('hidden'); }
         function closeForgotModal() { document.getElementById('forgotModal').classList.add('hidden'); }
 
-       async function handleResetRequest() {
-    const email = document.getElementById('resetEmail').value;
-    const btn = document.getElementById('resetBtn');
-    if (!email) return showToast("Enter your email address", "error");
+        async function handleResetRequest() {
+            const email = document.getElementById('resetEmail').value;
+            const btn   = document.getElementById('resetBtn');
+            if (!email) return showToast('Enter your email address', 'error');
 
-    btn.innerText = "Sending...";
-    btn.disabled = true;
+            btn.innerText = 'Sending...'; btn.disabled = true;
 
-    // THIS LINE AUTOMATICALLY DETECTS VERCEL OR LOCALHOST
-    const redirectUrl = window.location.origin + "/reset-password.html";
-    console.log("Supabase will redirect to:", redirectUrl);
+            const redirectUrl = window.location.origin + '/reset-password.html';
+            const { error } = await _supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
 
-    const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl,
-    });
+            if (error) {
+                showToast(error.message, 'error');
+            } else {
+                showToast('Reset link sent to ' + email, 'success');
+                closeForgotModal();
+            }
+            btn.innerText = 'Send Reset Link'; btn.disabled = false;
+        }
 
-    if (error) {
-        showToast(error.message, "error");
-    } else {
-        showToast("Reset link sent to " + email);
-        closeForgotModal();
-    }
-    btn.innerText = "Send Link";
-    btn.disabled = false;
-}
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('loginBtn');
-            btn.innerText = "Logging in...";
+            btn.innerText = 'Logging in...'; btn.disabled = true;
+
             const { data, error } = await _supabase.auth.signInWithPassword({
-                email: document.getElementById('email').value,
+                email:    document.getElementById('email').value,
                 password: document.getElementById('password').value,
             });
+
             if (error) {
-                showToast(error.message, "error");
-                btn.innerText = "Login";
+                showToast(error.message, 'error');
+                btn.innerText = 'Login'; btn.disabled = false;
             } else {
-                showToast("Welcome back!");
-                setTimeout(() => window.location.href = "dashboard.html", 1000);
+                showToast('Welcome back!', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 1000);
             }
         });
     </script>

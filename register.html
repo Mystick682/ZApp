@@ -3,223 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account | Elite Data Services</title>
+    <title>Create Account | ZApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfdfe; }
-        .tab-active { color: #0052FF; border-bottom: 3px solid #0052FF; }
-        .input-group:focus-within { border-color: #0052FF; background: white; box-shadow: 0 0 0 4px rgba(0, 82, 255, 0.05); }
-        @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-.animate-toast {
-    animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-/* Elite Dark Mode Colors - Corrected Syntax */
-.dark body { 
-    background-color: #0B1120 !important; 
-    color: #F1F5F9 !important; 
-}
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ECFDF5;
+            margin: 0; padding: 0;
+        }
 
-/* This targets the white cards and white backgrounds */
-.dark .bg-white, 
-.dark aside, 
-.dark nav, 
-.dark header { 
-    background-color: #111827 !important; 
-    border-color: #1F2937 !important; 
-    color: #F1F5F9 !important; 
-}
+        /* ── Blob animations ── */
+        @keyframes blob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(8px,-12px) scale(1.06)} }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+        .blob-a { animation: blob 8s ease-in-out infinite; }
+        .blob-b { animation: blob 11s ease-in-out infinite reverse; }
+        .pulse-dot { animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite; }
 
-/* This targets the light blue background sections */
-.dark [class*="bg-[#F8FAFF]"], 
-.dark .bg-slate-50 { 
-    background-color: #0B1120 !important; 
-}
+        /* ── Input group ── */
+        .input-group {
+            display: flex; align-items: center;
+            border: 1.5px solid #E4ECE7;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 0 16px;
+            transition: border-color .15s, box-shadow .15s;
+            box-shadow: 0 2px 8px rgba(6,78,59,.04);
+        }
+        .input-group:focus-within {
+            border-color: #0EA968;
+            box-shadow: 0 0 0 3px rgba(14,169,104,.10);
+        }
+        .input-group input, .input-group select {
+            width: 100%; padding: 14px 12px;
+            background: transparent; outline: none;
+            font-family: inherit; font-size: 14px;
+            font-weight: 600; color: #064E3B;
+            -webkit-appearance: none; appearance: none;
+        }
+        .input-group input::placeholder { color: #c4cde0; font-weight: 500; }
 
-/* This targets the dark navy text sections */
-.dark [class*="text-[#081B4B]"], 
-.dark .text-slate-900 { 
-    color: #F1F5F9 !important; 
-}
+        /* Phone prefix */
+        .phone-prefix {
+            background: #ECFDF5; padding: 14px 14px 14px 4px;
+            border-right: 1.5px solid #E4ECE7;
+            font-weight: 700; font-size: 13px; color: #064E3B;
+            white-space: nowrap; display: flex; align-items: center; gap: 6px;
+            flex-shrink: 0;
+        }
 
-/* This targets inputs */
-.dark input { 
-    background-color: #1F2937 !important; 
-    border-color: #374151 !important; 
-    color: white !important; 
-}
+        /* ── Tabs ── */
+        .tab-active { color: #0EA968; border-bottom: 3px solid #0EA968; }
 
-/* Muted text colors */
-.dark .text-slate-400, 
-.dark .text-slate-500 { 
-    color: #94A3B8 !important; 
-}
+        /* ── Feature grid items ── */
+        .feat-icon { background: rgba(255,255,255,.15); border-radius: 14px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        /* ── Dark mode ── */
+        .dark body                  { background-color: #0A130F !important; }
+        .dark .reg-card             { background-color: #101914 !important; border-color: #1C2E24 !important; }
+        .dark .input-group          { background-color: #152019 !important; border-color: #1C2E24 !important; }
+        .dark .input-group:focus-within { border-color: #0EA968 !important; box-shadow: 0 0 0 3px rgba(14,169,104,.2) !important; }
+        .dark .input-group input    { color: #E4ECE7 !important; }
+        .dark .phone-prefix         { background-color: #0E1813 !important; border-color: #1C2E24 !important; color: #E4ECE7 !important; }
+        .dark h2, .dark h3          { color: #ffffff !important; }
+        .dark .text-slate-400, .dark .text-slate-500 { color: #7C9388 !important; }
+        .dark .border-slate-100     { border-color: #1C2E24 !important; }
+        .dark .tab-inactive         { color: #3d5a4c !important; }
+        .dark label                 { color: #7C9388 !important; }
+        .dark .social-btn           { background-color: #152019 !important; border-color: #1C2E24 !important; color: #E4ECE7 !important; }
+        .dark .side-panel           { display: none; }
+        .dark .hint-text            { color: #3d5a4c !important; }
+        .dark .divider-line         { background-color: #1C2E24 !important; }
+        .dark .divider-text         { color: #3d5a4c !important; }
     </style>
-
+    <script src="theme.js"></script>
 </head>
-<body class="text-[#081B4B] antialiased">
+<body class="antialiased">
 
-    <!-- TOP NAVIGATION BAR -->
-    <nav class="flex items-center justify-between px-6 lg:px-16 py-5 bg-white border-b border-slate-100 sticky top-0 z-50">
-        <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 bg-[#0052FF] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                <i data-lucide="zap" class="w-5 h-5 fill-current"></i>
+    <!-- ── Main layout ── -->
+    <div class="min-h-screen flex">
+
+        <!-- Left panel — decorative (desktop only) -->
+        <div class="side-panel hidden lg:flex flex-col justify-between w-[45%] bg-gradient-to-br from-[#0EA968] to-[#0B7A4A] p-12 relative overflow-hidden">
+            <!-- Blobs -->
+            <div class="blob-a absolute -top-20 -right-16 w-72 h-72 bg-white/10 rounded-full"></div>
+            <div class="blob-b absolute -bottom-16 -left-12 w-56 h-56 bg-white/10 rounded-full"></div>
+            <div class="absolute top-1/3 right-8 w-32 h-32 bg-white/05 rounded-full blur-xl"></div>
+
+            <!-- Logo -->
+            <div class="relative z-10 flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i data-lucide="zap" class="w-6 h-6 text-white fill-current"></i>
+                </div>
+                <span class="text-xl font-extrabold italic text-white tracking-tight">ZApp</span>
             </div>
-            <span class="text-lg font-extrabold tracking-tight">Elite Data</span>
-        </div>
-        
-        <div class="hidden lg:flex items-center gap-8 text-[13px] font-bold text-slate-500 uppercase tracking-wider">
-            <a href="index.html" class="hover:text-blue-600 transition-colors">Home</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">About</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">Features</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">Contact</a>
-        </div>
 
-        <a href="login.html" class="bg-[#0052FF] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-blue-700 transition-all">Sign In</a>
-    </nav>
-
-    <main class="min-h-[calc(100vh-80px)] flex flex-col lg:flex-row">
-        
-        <!-- LEFT: MARKETING SECTION -->
-        <div class="hidden lg:flex lg:w-[50%] p-12 xl:p-24 flex-col justify-center bg-[#F8FAFF] border-r border-slate-50 relative overflow-hidden">
-            <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 bg-white border border-blue-100 px-4 py-2 rounded-full mb-8 shadow-sm">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-                    <span class="text-[11px] font-bold text-blue-600 uppercase tracking-widest">Join Elite Data Services</span>
+            <!-- Middle content -->
+            <div class="relative z-10 space-y-8">
+                <div class="inline-flex items-center gap-2 bg-white/15 px-4 py-2 rounded-full">
+                    <span class="pulse-dot w-2 h-2 bg-white rounded-full"></span>
+                    <span class="text-[11px] font-bold text-white uppercase tracking-widest">Join ZApp Today</span>
                 </div>
 
-                <h1 class="text-5xl xl:text-6xl font-extrabold leading-[1.1] mb-6 tracking-tight">
-                    Create your account<br>
-                    <span class="text-[#0052FF]">and get started</span>
-                </h1>
-                
-                <p class="text-slate-500 text-lg mb-12 max-w-md">Join thousands of customers enjoying seamless data and airtime services with 100% automated delivery.</p>
+                <h2 class="text-4xl font-black text-white leading-tight tracking-tight">
+                    Create your account<br>and get started<br><span class="text-emerald-200">for free.</span>
+                </h2>
+                <p class="text-emerald-100 font-medium leading-relaxed text-base max-w-xs">
+                    Join thousands of Nigerians enjoying seamless data and bill payments with 100% automated delivery.
+                </p>
 
-                <div class="grid grid-cols-2 gap-y-10 gap-x-6 max-w-lg">
-                    <div class="flex gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm"><i data-lucide="shield-check" class="text-blue-600 w-6 h-6"></i></div>
-                        <div><p class="font-extrabold text-sm">Secure & Reliable</p><p class="text-xs text-slate-400">100% Secure</p></div>
+                <!-- Feature list -->
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div class="flex items-center gap-3">
+                        <div class="feat-icon"><i data-lucide="shield-check" class="w-5 h-5 text-white"></i></div>
+                        <div>
+                            <p class="text-white font-black text-sm leading-none">Secure</p>
+                            <p class="text-emerald-200 text-[10px] font-bold mt-0.5">100% Safe</p>
+                        </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm"><i data-lucide="zap" class="text-blue-600 w-6 h-6"></i></div>
-                        <div><p class="font-extrabold text-sm">Instant Delivery</p><p class="text-xs text-slate-400">Real-time</p></div>
+                    <div class="flex items-center gap-3">
+                        <div class="feat-icon"><i data-lucide="zap" class="w-5 h-5 text-white"></i></div>
+                        <div>
+                            <p class="text-white font-black text-sm leading-none">Instant</p>
+                            <p class="text-emerald-200 text-[10px] font-bold mt-0.5">Real-time</p>
+                        </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm"><i data-lucide="trending-down" class="text-blue-600 w-6 h-6"></i></div>
-                        <div><p class="font-extrabold text-sm">Best Rates</p><p class="text-xs text-slate-400">Cheapest prices</p></div>
+                    <div class="flex items-center gap-3">
+                        <div class="feat-icon"><i data-lucide="badge-percent" class="w-5 h-5 text-white"></i></div>
+                        <div>
+                            <p class="text-white font-black text-sm leading-none">Best Rates</p>
+                            <p class="text-emerald-200 text-[10px] font-bold mt-0.5">Cheapest prices</p>
+                        </div>
                     </div>
-                    <div class="flex gap-4">
-                        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm"><i data-lucide="headset" class="text-blue-600 w-6 h-6"></i></div>
-                        <div><p class="font-extrabold text-sm">24/7 Support</p><p class="text-xs text-slate-400">Always active</p></div>
+                    <div class="flex items-center gap-3">
+                        <div class="feat-icon"><i data-lucide="headset" class="w-5 h-5 text-white"></i></div>
+                        <div>
+                            <p class="text-white font-black text-sm leading-none">24/7 Support</p>
+                            <p class="text-emerald-200 text-[10px] font-bold mt-0.5">Always active</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Bottom tagline -->
+            <p class="relative z-10 text-emerald-200 text-xs font-bold uppercase tracking-widest">
+                © 2026 ZApp · Fast. Secure. Reliable.
+            </p>
         </div>
 
-        <!-- RIGHT: REGISTRATION FORM SECTION -->
-        <div class="flex-1 flex items-center justify-center p-6 lg:p-12 overflow-y-auto">
-            <div class="w-full max-w-[460px]">
-                
-                <div class="bg-white p-8 lg:p-10 rounded-[32px] shadow-2xl shadow-blue-900/5 border border-slate-50">
-                    <div class="text-center mb-10">
-                        <h2 class="text-3xl font-extrabold mb-2">Create Account</h2>
+        <!-- Right panel — form -->
+        <div class="flex-1 flex items-start justify-center p-6 lg:p-12 overflow-y-auto">
+            <div class="w-full max-w-[460px] py-6">
+
+                <!-- Mobile logo -->
+                <div class="flex items-center justify-center gap-3 mb-8 lg:hidden">
+                    <div class="w-10 h-10 bg-[#0EA968] rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200">
+                        <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                    </div>
+                    <span class="text-xl font-extrabold italic text-[#064E3B] tracking-tight">ZApp</span>
+                </div>
+
+                <div class="reg-card bg-white rounded-[32px] shadow-xl shadow-emerald-900/5 border border-slate-100 p-8 lg:p-10">
+
+                    <!-- Heading -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-extrabold mb-1 text-[#032B20]">Create Account</h2>
                         <p class="text-slate-400 text-sm font-medium">Fill in your details to get started</p>
                     </div>
 
+                    <!-- Tabs -->
                     <div class="flex border-b border-slate-100 mb-8 text-center">
-                        <a href="login.html" class="flex-1 pb-3 text-sm font-bold text-slate-300 hover:text-slate-500">Login</a>
-                        <div class="flex-1 pb-3 text-sm font-bold tab-active cursor-pointer">Register</div>
+                        <a href="login.html" class="tab-inactive flex-1 pb-3 text-sm font-bold text-slate-300 hover:text-slate-500 transition-colors">Login</a>
+                        <div class="flex-1 pb-3 text-sm font-black tab-active cursor-pointer">Register</div>
                     </div>
 
+                    <!-- Form -->
                     <form id="registerForm" class="space-y-5">
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Full Name</label>
-                            <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all">
-                                <i data-lucide="user" class="w-5 h-5 text-slate-300"></i>
-                                <input type="text" id="fullName" class="w-full p-3.5 bg-transparent outline-none text-sm font-medium" placeholder="Enter your full name" required>
+
+                        <!-- Full Name -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                            <div class="input-group">
+                                <i data-lucide="user" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                                <input type="text" id="fullName" placeholder="Enter your full name" required>
                             </div>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Email Address</label>
-                            <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all">
-                                <i data-lucide="mail" class="w-5 h-5 text-slate-300"></i>
-                                <input type="email" id="email" class="w-full p-3.5 bg-transparent outline-none text-sm font-medium" placeholder="example@mail.com" required>
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                            <div class="input-group">
+                                <i data-lucide="mail" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                                <input type="email" id="email" placeholder="example@mail.com" required>
                             </div>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Phone Number</label>
-                            <div class="flex border border-slate-200 rounded-2xl bg-slate-50/50 overflow-hidden input-group transition-all">
-                                <div class="bg-slate-100 px-4 flex items-center gap-2 border-r border-slate-200 font-bold text-slate-600 text-sm">
+                        <!-- Phone -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                            <div class="input-group" style="padding: 0;">
+                                <div class="phone-prefix">
                                     <span>🇳🇬</span> +234
                                 </div>
-                                <input type="tel" id="phone" class="flex-1 p-3.5 bg-transparent outline-none text-sm font-medium" placeholder="801 234 5678" required>
+                                <input type="tel" id="phone" placeholder="801 234 5678" required style="padding-left: 12px;">
                             </div>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Password</label>
-                            <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all relative">
-                                <i data-lucide="lock" class="w-5 h-5 text-slate-300"></i>
-                                <input type="password" id="password" class="w-full p-3.5 bg-transparent outline-none text-sm font-medium" placeholder="Create a password" required minlength="6">
-                                <button type="button" onclick="togglePasswordVisibility()" class="focus:outline-none">
-                                    <i id="eyeIcon" data-lucide="eye-off" class="w-5 h-5 text-slate-300 hover:text-[#0052FF] transition-colors"></i>
+                        <!-- Password -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
+                            <div class="input-group">
+                                <i data-lucide="lock" class="w-5 h-5 text-slate-300 shrink-0"></i>
+                                <input type="password" id="password" placeholder="Create a password" required minlength="6">
+                                <button type="button" onclick="togglePasswordVisibility()" class="focus:outline-none ml-2 shrink-0">
+                                    <i id="eyeIcon" data-lucide="eye-off" class="w-5 h-5 text-slate-300 hover:text-[#0EA968] transition-colors"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- ── TRANSACTION PIN (new) ── -->
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Transaction PIN</label>
-                            <div class="input-group flex items-center border border-slate-200 rounded-2xl bg-slate-50/50 px-4 transition-all">
-                                <i data-lucide="shield" class="w-5 h-5 text-slate-300"></i>
+                        <!-- Transaction PIN -->
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Transaction PIN</label>
+                            <div class="input-group">
+                                <i data-lucide="shield" class="w-5 h-5 text-slate-300 shrink-0"></i>
                                 <input type="password" id="transactionPin" maxlength="4" pattern="\d{4}"
-                                    class="w-full p-3.5 bg-transparent outline-none text-sm font-medium tracking-[0.5em]"
-                                    placeholder="4-digit PIN" required inputmode="numeric">
+                                    placeholder="4-digit PIN" required inputmode="numeric"
+                                    style="letter-spacing: .5em;">
                             </div>
-                            <p class="text-[10px] text-slate-400 ml-1">Used to authorise transactions. Keep it secret.</p>
+                            <p class="hint-text text-[10px] text-slate-400 ml-1">Used to authorise transactions. Keep it secret.</p>
                         </div>
-                        <!-- ── END TRANSACTION PIN ── -->
 
-                        <div class="flex items-start gap-3 py-2">
-                            <input type="checkbox" class="mt-1 w-5 h-5 rounded-lg border-slate-300 text-[#0052FF] focus:ring-[#0052FF]" required>
-                            <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                                I agree to the <span class="text-[#0052FF] font-bold cursor-pointer">Terms of Service</span> and <span class="text-[#0052FF] font-bold cursor-pointer">Privacy Policy</span>
+                        <!-- Terms -->
+                        <div class="flex items-start gap-3 py-1">
+                            <input type="checkbox" id="terms"
+                                class="mt-0.5 w-5 h-5 rounded-lg border-slate-300 accent-[#0EA968] shrink-0" required>
+                            <p class="text-xs text-slate-400 leading-relaxed font-medium">
+                                I agree to the
+                                <span class="text-[#0EA968] font-black cursor-pointer hover:text-emerald-700">Terms of Service</span>
+                                and
+                                <span class="text-[#0EA968] font-black cursor-pointer hover:text-emerald-700">Privacy Policy</span>
                             </p>
                         </div>
 
-                        <button type="submit" class="w-full bg-[#0052FF] text-white py-4.5 rounded-2xl font-extrabold text-lg shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+                        <!-- Submit -->
+                        <button type="submit" id="registerBtn"
+                            class="w-full bg-[#0EA968] text-white py-4 rounded-full font-black text-sm shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 active:scale-[0.98] uppercase tracking-widest mt-2">
                             Create Account <i data-lucide="arrow-right" class="w-5 h-5"></i>
                         </button>
                     </form>
 
-                    <div class="relative my-9 flex items-center gap-4">
-                        <div class="flex-1 h-px bg-slate-100"></div>
-                        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">or sign up with</span>
-                        <div class="flex-1 h-px bg-slate-100"></div>
+                    <!-- Divider -->
+                    <div class="relative my-8 flex items-center gap-4">
+                        <div class="divider-line flex-1 h-px bg-slate-100"></div>
+                        <span class="divider-text text-[10px] font-bold text-slate-300 uppercase tracking-widest">or sign up with</span>
+                        <div class="divider-line flex-1 h-px bg-slate-100"></div>
                     </div>
 
+                    <!-- Social buttons -->
                     <div class="grid grid-cols-2 gap-4">
-                        <button class="flex items-center justify-center gap-3 py-3.5 border border-slate-200 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                        <button class="social-btn flex items-center justify-center gap-3 py-3.5 border border-slate-200 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
                             <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5"> Google
                         </button>
-                        <button class="flex items-center justify-center gap-3 py-3.5 border border-slate-200 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
+                        <button class="social-btn flex items-center justify-center gap-3 py-3.5 border border-slate-200 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-50 transition-all">
                             <img src="https://www.svgrepo.com/show/475643/facebook-color.svg" class="w-5 h-5"> Facebook
                         </button>
                     </div>
+
+                    <!-- Login link -->
+                    <p class="text-center text-xs font-bold text-slate-400 mt-6">
+                        Already have an account?
+                        <a href="login.html" class="text-[#0EA968] font-black hover:text-emerald-700 transition-colors ml-1">Login</a>
+                    </p>
                 </div>
-                <p class="text-center mt-10 text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] flex items-center justify-center gap-2">
-                    <i data-lucide="shield-check" class="w-4 h-4 text-blue-500"></i> Secure SSL Encryption
+
+                <!-- SSL badge -->
+                <p class="text-center mt-6 text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-[#0EA968]"></i> Secure SSL Encryption
                 </p>
+
             </div>
         </div>
-    </main>
+    </div>
 
     <script src="notifications.js"></script>
     <script src="supabase-config.js"></script>
@@ -227,63 +294,59 @@
         lucide.createIcons();
 
         function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.setAttribute('data-lucide', 'eye');
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.setAttribute('data-lucide', 'eye-off');
-            }
+            const pass = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            pass.type = pass.type === 'password' ? 'text' : 'password';
+            icon.setAttribute('data-lucide', pass.type === 'password' ? 'eye-off' : 'eye');
             lucide.createIcons();
         }
 
-        const form = document.getElementById('registerForm');
-        form.addEventListener('submit', async (e) => {
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const urlParams = new URLSearchParams(window.location.search);
             const refCodeFromUrl = urlParams.get('ref');
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
             const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
+            const email    = document.getElementById('email').value;
+            const phone    = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const pin      = document.getElementById('transactionPin').value;
 
-            // ── PIN validation (new) ──
-            const pin = document.getElementById('transactionPin').value;
             if (!/^\d{4}$/.test(pin)) {
-                showToast("Transaction PIN must be exactly 4 digits", "error");
+                showToast('Transaction PIN must be exactly 4 digits', 'error');
                 return;
             }
-            // ── END PIN validation ──
+
+            const btn = document.getElementById('registerBtn');
+            btn.innerHTML = 'Creating Account...'; btn.disabled = true;
 
             const { data, error } = await _supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    full_name: fullName,
-                    phone_number: phone,
-                    referred_by: refCodeFromUrl
-                    // transaction_pin removed from here
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name:    fullName,
+                        phone_number: phone,
+                        referred_by:  refCodeFromUrl
+                    }
                 }
+            });
+
+            if (error) {
+                showToast(error.message, 'error');
+                btn.innerHTML = 'Create Account <i data-lucide="arrow-right" class="w-5 h-5"></i>';
+                btn.disabled = false;
+                lucide.createIcons();
+            } else {
+                await _supabase
+                    .from('profiles')
+                    .update({ transaction_pin: pin })
+                    .eq('id', data.user.id);
+
+                showToast('Welcome to ZApp!', 'success');
+                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
             }
-        });
-        
-        if (error) {
-            showToast(error.message, "error");
-        } else {
-            // Save the PIN separately after the user is created
-            await _supabase
-                .from('profiles')
-                .update({ transaction_pin: pin })
-                .eq('id', data.user.id);
-        
-            showToast("Welcome to the Elite family!");
-            setTimeout(() => { window.location.href = "login.html"; }, 1500);
-        }
         });
     </script>
 </body>

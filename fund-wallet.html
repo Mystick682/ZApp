@@ -3,121 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fund Wallet | Elite Data Services</title>
+    <title>Fund Wallet | ZApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F8FAFF; margin: 0; padding: 0; overflow-x: hidden; }
+        /* ── Base ── */
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #ECFDF5;
+            margin: 0; padding: 0; overflow-x: hidden;
+            color: #064E3B;
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-nav { background: #0052FF !important; color: white !important; }
+
+        /* ── Sidebar ── */
         #sidebar { transition: transform 0.3s ease; }
-        .overlap-card { z-index: 70 !important; position: relative; }
-        .dark body { background-color: #0B1120 !important; color: #ffffff !important; }
-        .dark .bg-white, .dark aside, .dark nav, .dark header { background-color: #111827 !important; border-color: #1F2937 !important; color: #ffffff !important; }
-        .dark input { background-color: #1F2937 !important; border-color: #374151 !important; color: white !important; }
+        .nav-link { position: relative; transition: all .15s ease; }
+        .active-nav-pill { background: rgba(14,169,104,.10) !important; color: #0EA968 !important; }
+        .active-nav-pill::before { content: ''; position: absolute; left: -6px; top: 50%; transform: translateY(-50%); width: 4px; height: 60%; background: #0EA968; border-radius: 4px; }
+
+        /* ── Hero decoration ── */
+        @keyframes blob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(6px,-8px) scale(1.05)} }
+        .blob-a { animation: blob 7s ease-in-out infinite; }
+        .blob-b { animation: blob 9s ease-in-out infinite reverse; }
+        .hero-icon-ring { width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; }
+
+        /* ── Cards ── */
+        .card    { background: #ffffff; border-radius: 24px; box-shadow: 0 4px 24px rgba(6,78,59,.08); }
+        .card-lg { background: #ffffff; border-radius: 28px; box-shadow: 0 8px 40px rgba(6,78,59,.10); }
+
+        /* ── Inputs ── */
+        .field {
+            width: 100%; background: #ffffff; border: 1.5px solid #E4ECE7; border-radius: 16px;
+            padding: 14px 16px; font-family: inherit; font-weight: 600; font-size: 14px;
+            color: #064E3B; outline: none; box-shadow: 0 2px 8px rgba(6,78,59,.05);
+            transition: border-color .15s, box-shadow .15s;
+        }
+        .field:focus { border-color: #0EA968; box-shadow: 0 0 0 3px rgba(14,169,104,.10); }
+        .field::placeholder { color: #c4cde0; font-weight: 500; }
+
+        /* ── Account number copy animation ── */
+        .acct-num { letter-spacing: .08em; cursor: pointer; transition: color .15s; }
+        .acct-num:hover { color: #0EA968; }
+
+        /* ── Dark Mode ── */
+        .dark body                       { background-color: #0A130F !important; color: #E4ECE7 !important; }
+        .dark main                       { background-color: #0A130F !important; }
+        .dark main > div                 { background-color: #0A130F !important; }
+        .dark #sidebar                   { background-color: #0E1813 !important; border-color: #1C2E24 !important; }
+        .dark #sidebar h1                { color: #ffffff !important; }
+        .dark #sidebar a                 { color: #7C9388 !important; }
+        .dark #sidebar a.active-nav-pill { color: #34D399 !important; background-color: rgba(52,211,153,.12) !important; }
+        .dark header                     { background-color: #0E1813 !important; border-color: #1C2E24 !important; }
+        .dark header span                { color: #E4ECE7 !important; }
+        .dark header .font-black         { color: #ffffff !important; }
+        .dark .card, .dark .card-lg      { background-color: #101914 !important; }
+        .dark .bg-white                  { background-color: #101914 !important; }
+        .dark .field                     { background-color: #152019 !important; border-color: #1C2E24 !important; color: #E4ECE7 !important; box-shadow: none !important; }
+        .dark .field:focus               { border-color: #0EA968 !important; box-shadow: 0 0 0 3px rgba(14,169,104,.2) !important; }
+        .dark .field::placeholder        { color: #2A4036 !important; }
+        .dark h1, .dark h2, .dark h3     { color: #ffffff !important; }
+        .dark h4                         { color: #7C9388 !important; }
+        .dark .text-slate-400            { color: #7C9388 !important; }
+        .dark .divider                   { border-color: #1C2E24 !important; }
+        .dark .acct-box                  { background-color: #0E1813 !important; border-color: #1C2E24 !important; }
+        .dark .step-badge                { background-color: rgba(14,169,104,.15) !important; }
+        #page-body                       { background-color: #ECFDF5; }
+        .dark #page-body                 { background-color: #0A130F !important; }
+        .dark .text-\[#064E3B\]          { color: #E4ECE7 !important; }
+        .dark .balance-num               { color: #ffffff !important; }
+        .dark label span                 { color: #7C9388 !important; }
     </style>
     <script src="theme.js"></script>
 </head>
-<body class="text-[#081B4B] antialiased">
+<body class="antialiased">
+
     <div id="overlay" class="fixed inset-0 bg-black/40 z-[80] hidden lg:hidden" onclick="toggleMenu()"></div>
-    
+
     <div class="flex min-h-screen">
-        <!-- SIDEBAR -->
+
+        <!-- ── Sidebar ── -->
         <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-slate-100 z-[90] flex flex-col p-6 -translate-x-full lg:translate-x-0 transition-transform duration-300">
-            <h1 class="text-lg font-black mb-10 text-[#0052FF]">Elite Data</h1>
-            <nav class="flex-1 space-y-1 font-bold text-[13px]">
-                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="layout-grid" class="w-4 h-4"></i> Dashboard</a>
-                <a href="fund-wallet.html" class="active-nav flex items-center gap-3 px-4 py-3 rounded-2xl"><i data-lucide="plus-circle" class="w-4 h-4"></i> Fund Wallet</a>
+            <div class="flex items-center gap-3 mb-10">
+                <div class="w-10 h-10 bg-[#0EA968] rounded-xl flex items-center justify-content-center items-center justify-center text-white shadow-lg">
+                    <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                </div>
+                <h1 class="text-lg font-extrabold tracking-tight italic text-[#064E3B]">ZApp</h1>
+            </div>
+            <nav class="flex-1 space-y-1.5 font-bold text-[13px] overflow-y-auto no-scrollbar">
+                <a href="dashboard.html"   class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="layout-grid"  class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="smartphone"    class="w-4 h-4"></i> Airtime</a>
+                <a href="cable-tv.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="tv"            class="w-4 h-4"></i> Cable TV</a>
+                <a href="electricity.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="zap"           class="w-4 h-4"></i> Electricity</a>
+                <a href="history.html"     class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="history"        class="w-4 h-4"></i> History</a>
+                <a href="fund-wallet.html" class="nav-link active-nav-pill flex items-center gap-3 px-4 py-3 rounded-xl"><i data-lucide="wallet"         class="w-4 h-4"></i> Wallet</a>
+                <a href="referrals.html"   class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="users"          class="w-4 h-4"></i> Referrals</a>
+                <a href="support.html"     class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="headset"         class="w-4 h-4"></i> Support</a>
+                <a href="settings.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="settings"        class="w-4 h-4"></i> Settings</a>
             </nav>
         </aside>
 
-        <main class="flex-1 flex flex-col min-w-0 bg-[#F8FAFF]">
-            <header class="lg:hidden bg-white px-6 py-4 flex justify-between items-center border-b border-slate-50 sticky top-0 z-[60]">
-                <button onclick="toggleMenu()"><i data-lucide="menu" class="w-6 h-6"></i></button>
-                <span class="font-extrabold text-[#0052FF]">Fund Wallet</span>
-                <button onclick="toggleTheme()"><i data-lucide="moon" class="w-5 h-5 text-slate-400 dark:hidden"></i><i data-lucide="sun" class="hidden dark:block w-5 h-5 text-yellow-400"></i></button>
+        <!-- ── Main ── -->
+        <main class="flex-1 flex flex-col min-w-0">
+
+            <!-- Mobile header -->
+            <header class="lg:hidden bg-white px-5 py-4 flex justify-between items-center border-b border-slate-100 sticky top-0 z-[60] shadow-sm">
+                <button onclick="toggleMenu()" class="w-9 h-9 flex items-center justify-center">
+                    <i data-lucide="menu" class="w-5 h-5 text-[#064E3B]"></i>
+                </button>
+                <span class="font-extrabold text-sm text-[#0EA968] tracking-wide">Fund Wallet</span>
+                <button onclick="toggleTheme()" class="w-10 h-10 bg-[#13231b] rounded-xl flex items-center justify-center">
+                    <i data-lucide="moon" class="w-4 h-4 text-emerald-300 dark:hidden"></i>
+                    <i data-lucide="sun"  class="hidden dark:block w-4 h-4 text-yellow-400"></i>
+                </button>
             </header>
 
-            <div class="w-full pb-32">
-                <div class="lg:hidden bg-[#0052FF] p-6 pb-24 text-white rounded-b-[40px]">
-                    <p class="text-blue-100 text-[10px] font-bold uppercase mb-1">Step 1: Transfer Money</p>
-                    <h2 class="text-xl font-black">Bank Transfer 🏦</h2>
+            <!-- Desktop header -->
+            <header class="hidden lg:flex bg-white border-b border-slate-100 px-10 py-5 justify-between items-center sticky top-0 z-50">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.pravatar.cc/100" class="w-10 h-10 rounded-2xl border border-slate-200 object-cover">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Welcome back</p>
+                        <div id="user-name-desktop" class="font-extrabold text-base text-[#064E3B] leading-none">Loading...</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-5">
+                    <button onclick="toggleTheme()" class="w-10 h-10 bg-[#13231b] rounded-xl flex items-center justify-center">
+                        <i data-lucide="moon" class="w-4 h-4 text-emerald-300 dark:hidden"></i>
+                        <i data-lucide="sun"  class="hidden dark:block w-4 h-4 text-yellow-400"></i>
+                    </button>
+                    <div class="flex items-center gap-3 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">
+                        <span class="text-[10px] font-bold text-[#0EA968] uppercase">Balance</span>
+                        <span class="text-sm font-black text-[#064E3B]">₦<span id="user-balance-desktop" class="balance-num">0.00</span></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Scrollable body -->
+            <div id="page-body" class="w-full pb-32 overflow-y-auto flex-1">
+
+                <!-- Mobile hero banner -->
+                <div class="lg:hidden relative overflow-hidden bg-gradient-to-br from-[#0EA968] to-[#0B7A4A] px-6 pt-7 pb-24 text-white rounded-b-[40px]">
+                    <div class="blob-a absolute -top-12 -right-10 w-44 h-44 bg-white/10 rounded-full"></div>
+                    <div class="blob-b absolute bottom-2 -left-10 w-32 h-32 bg-white/10 rounded-full"></div>
+                    <div class="relative z-10 flex justify-between items-center">
+                        <div class="flex-1">
+                            <p class="text-emerald-100 text-[10px] font-bold uppercase mb-1 tracking-widest">Add Money,</p>
+                            <h2 class="text-2xl font-black uppercase text-white tracking-wide">Fund Wallet 💰</h2>
+                        </div>
+                        <div class="hero-icon-ring">
+                            <i data-lucide="wallet" class="w-7 h-7 text-white"></i>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="max-w-4xl mx-auto px-6">
-                    <!-- BANK DETAILS CARD -->
-                    <div class="relative z-20 bg-white dark:bg-[#111827] p-8 rounded-[32px] lg:mt-10 -mt-16 shadow-2xl border border-slate-50 flex flex-col items-center">
-                        <p class="text-slate-400 text-[10px] font-bold uppercase mb-4 tracking-widest">Pay into this account</p>
-                        <div class="text-center space-y-2">
-                            <h3 class="text-3xl font-black text-[#0052FF]">955 756 3864</h3>
-                            <p class="font-bold text-sm dark:text-white uppercase tracking-wider">OPay Digital Services</p>
-                            <p class="text-xs text-slate-400 font-bold uppercase">Elite Data Hub</p>
+                <div class="max-w-2xl mx-auto px-4 lg:px-10">
+
+                    <!-- Mobile overlap card — account details -->
+                    <div class="card-lg relative z-20 -mt-16 lg:mt-10 p-8">
+
+                        <!-- Step badge -->
+                        <div class="step-badge inline-flex items-center gap-2 bg-emerald-50 text-[#0EA968] text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-6">
+                            <i data-lucide="landmark" class="w-3.5 h-3.5"></i>
+                            Step 1 — Bank Transfer
+                        </div>
+
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-5">Transfer to this account</p>
+
+                        <!-- Account box -->
+                        <div class="acct-box bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center space-y-2 mb-4">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Account Number</p>
+                            <div class="flex items-center justify-center gap-3">
+                                <h3 class="acct-num text-3xl font-black text-[#064E3B]" onclick="copyAcct()">955 756 3864</h3>
+                                <button onclick="copyAcct()" class="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm border border-emerald-100 hover:bg-emerald-100 transition-colors">
+                                    <i data-lucide="copy" class="w-4 h-4 text-[#0EA968]"></i>
+                                </button>
+                            </div>
+                            <p class="font-black text-sm text-[#064E3B] uppercase tracking-wider">OPay Digital Services</p>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">ZApp</p>
+                        </div>
+
+                        <p class="text-[10px] text-slate-400 font-bold text-center">Tap the account number or copy icon to copy</p>
+                    </div>
+
+                    <!-- Step 2: Submission form -->
+                    <div class="card-lg mt-6 p-8">
+
+                        <div class="step-badge inline-flex items-center gap-2 bg-emerald-50 text-[#0EA968] text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-6">
+                            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                            Step 2 — Submit Proof
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">
+                                    <span>Amount Sent (₦)</span>
+                                </label>
+                                <div class="relative">
+                                    <i data-lucide="naira-sign" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5 pointer-events-none"></i>
+                                    <input type="number" id="depositAmount" class="field pl-12" placeholder="0.00">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">
+                                    <span>Your Bank Name / Account Name</span>
+                                </label>
+                                <div class="relative">
+                                    <i data-lucide="building-2" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5 pointer-events-none"></i>
+                                    <input type="text" id="senderName" class="field pl-12" placeholder="e.g. John Doe / GTB">
+                                </div>
+                            </div>
+
+                            <button onclick="submitDeposit()" id="submitBtn"
+                                class="w-full bg-[#0EA968] text-white py-4 rounded-full font-black text-sm shadow-lg active:scale-95 transition-all uppercase tracking-widest hover:bg-emerald-700 mt-2">
+                                Notify Admin
+                            </button>
                         </div>
                     </div>
 
-                    <!-- SUBMISSION FORM -->
-                    <div class="mt-10 space-y-8">
-                        <section class="bg-white dark:bg-[#111827] p-8 rounded-[32px] border border-slate-100 shadow-sm">
-                            <h4 class="font-extrabold text-sm mb-6 uppercase text-slate-400">Step 2: Submit Proof</h4>
-                            <div class="space-y-5">
-                                <div>
-                                    <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Amount Sent (₦)</label>
-                                    <input type="number" id="depositAmount" class="w-full p-4 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-100 rounded-2xl font-black text-lg outline-none focus:border-[#0052FF]" placeholder="0.00">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Your Bank Name / Account Name</label>
-                                    <input type="text" id="senderName" class="w-full p-4 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-100 rounded-2xl font-bold outline-none focus:border-[#0052FF]" placeholder="e.g. John Doe / GTB">
-                                </div>
-                                <button onclick="submitDeposit()" id="submitBtn" class="w-full bg-[#0052FF] text-white py-5 rounded-2xl font-black shadow-xl active:scale-95 transition-all">Notify Admin</button>
-                            </div>
-                        </section>
+                    <!-- Info note -->
+                    <div class="mt-6 bg-emerald-50 border border-emerald-100 rounded-2xl p-5 flex gap-4 items-start">
+                        <div class="w-8 h-8 bg-[#0EA968] rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <i data-lucide="info" class="w-4 h-4 text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-[#064E3B] uppercase tracking-wide mb-1">How it works</p>
+                            <p class="text-xs text-slate-500 font-medium leading-relaxed">
+                                Transfer the exact amount to the account above, then fill in the form and tap <strong>Notify Admin</strong>. Your wallet will be credited after verification — usually within minutes.
+                            </p>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="supabase-config.js"></script><script src="notifications.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="notifications.js"></script>
     <script>
         lucide.createIcons();
-        let userId = "", fullName = "";
+        let userId = '', fullName = '';
 
         async function init() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) { window.location.href = "login.html"; return; }
+            if (!session) { window.location.href = 'login.html'; return; }
             userId = session.user.id;
             const { data: prof } = await _supabase.from('profiles').select('full_name').eq('id', userId).single();
-            fullName = prof.full_name;
+            if (prof) {
+                fullName = prof.full_name;
+                document.getElementById('user-name-desktop').innerText = prof.full_name;
+            }
+            const { data: wall } = await _supabase.from('wallets').select('balance').eq('id', userId).single();
+            if (wall) {
+                const bal = parseFloat(wall.balance).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                document.getElementById('user-balance-desktop').innerText = bal;
+            }
         }
 
         async function submitDeposit() {
-            const amt = document.getElementById('depositAmount').value;
+            const amt    = document.getElementById('depositAmount').value;
             const sender = document.getElementById('senderName').value;
-            const btn = document.getElementById('submitBtn');
+            const btn    = document.getElementById('submitBtn');
 
-            if (!amt || !sender) return showToast("Fill all fields", "error");
+            if (!amt || !sender) return showToast('Fill all fields', 'error');
 
-            btn.innerText = "Submitting..."; btn.disabled = true;
+            btn.innerText = 'Submitting...'; btn.disabled = true;
 
             const { error } = await _supabase.from('manual_deposits').insert([{
-                user_id: userId,
-                user_name: fullName,
-                amount: parseFloat(amt),
+                user_id:     userId,
+                user_name:   fullName,
+                amount:      parseFloat(amt),
                 sender_name: sender,
-                status: 'Pending'
+                status:      'Pending'
             }]);
 
             if (error) {
-                showToast(error.message, "error");
-                btn.innerText = "Notify Admin"; btn.disabled = false;
+                showToast(error.message, 'error');
+                btn.innerText = 'Notify Admin'; btn.disabled = false;
             } else {
-                showToast("Request sent! Wallet will be updated after verification.", "success");
-                setTimeout(() => window.location.href = "dashboard.html", 2500);
+                showToast('Request sent! Wallet will be updated after verification.', 'success');
+                setTimeout(() => window.location.href = 'dashboard.html', 2500);
             }
         }
-        function toggleMenu() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('overlay').classList.toggle('hidden'); }
+
+        function copyAcct() {
+            navigator.clipboard.writeText('9557563864').then(() => {
+                showToast('Account number copied!', 'success');
+            });
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
         window.onload = init;
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Elite Data Services</title>
+    <title>Dashboard | ZApp</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,35 +12,35 @@
         *, *::before, *::after { box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #EEF2FF;
+            background-color: #ECFDF5;
             margin: 0; padding: 0; overflow-x: hidden;
-            color: #081B4B;
+            color: #064E3B;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         #sidebar { transition: transform 0.3s ease; }
-        .active-nav { background: #0052FF !important; color: #ffffff !important; }
+        .active-nav { background: #0EA968 !important; color: #ffffff !important; }
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
-        .phone-container { position:relative; width:85px; height:90px; margin-right:-5px; }
-        .phone-handset { width:44px; height:82px; background:#081B4B; border:2px solid rgba(255,255,255,.2); border-radius:8px; position:absolute; right:10px; bottom:0; transform:rotate(-8deg); overflow:hidden; }
-        .phone-display { position:absolute; inset:2px; background:linear-gradient(180deg,#246BFD 0%,#0052FF 100%); border-radius:6px; }
-        .tile { position:absolute; background:#fff; padding:4px; border-radius:6px; box-shadow:0 8px 15px rgba(0,0,0,.15); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:20; animation:float 3s ease-in-out infinite; }
-        .tile i { width:12px; height:12px; }
-        .tile span { font-size:5px; font-weight:900; text-transform:uppercase; margin-top:1px; }
-        .tile-data   { top:5px;  left:0;    animation-delay:0s;   color:#0052FF; }
-        .tile-airtime{ top:32px; right:-5px; animation-delay:1s;  color:#10b981; }
-        .tile-tv     { bottom:10px; left:10px; animation-delay:.5s; color:#a855f7; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+        @keyframes blob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(6px,-8px) scale(1.05)} }
+        .blob-a { animation: blob 7s ease-in-out infinite; }
+        .blob-b { animation: blob 9s ease-in-out infinite reverse; }
+        .greet-avatar { width:50px; height:50px; border-radius:16px; object-fit:cover; border:2px solid rgba(255,255,255,.35); }
 
-        .card    { background:#ffffff; border-radius:24px; box-shadow:0 4px 24px rgba(8,27,75,.08); }
-        .card-lg { background:#ffffff; border-radius:28px; box-shadow:0 8px 40px rgba(8,27,75,.10); }
+        .card    { background:#ffffff; border-radius:24px; box-shadow:0 4px 24px rgba(6,78,59,.08); }
+        .card-lg { background:#ffffff; border-radius:28px; box-shadow:0 8px 40px rgba(6,78,59,.10); }
 
         .action-card {
-            background:#ffffff; border:2px solid #e8edf8; border-radius:20px;
-            box-shadow:0 2px 8px rgba(8,27,75,.06); transition:all .15s ease;
+            background:#ffffff; border-radius:20px;
+            box-shadow:0 2px 10px rgba(6,78,59,.06); transition:all .18s ease;
             display:flex; flex-direction:column; align-items:center;
-            padding:20px 12px; text-align:center; text-decoration:none;
+            padding:18px 10px; text-align:center; text-decoration:none;
         }
-        .action-card:hover { box-shadow:0 4px 16px rgba(0,82,255,.12); transform:translateY(-2px); }
+        .action-card:hover { box-shadow:0 8px 20px rgba(14,169,104,.18); transform:translateY(-3px); }
+        .action-icon { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:transform .18s ease; }
+        .action-card:hover .action-icon { transform:scale(1.08); }
+        .nav-link { position:relative; transition:all .15s ease; }
+        .active-nav-pill { background: rgba(14,169,104,.10) !important; color:#0EA968 !important; }
+        .active-nav-pill::before { content:''; position:absolute; left:-6px; top:50%; transform:translateY(-50%); width:4px; height:60%; background:#0EA968; border-radius:4px; }
 
         @keyframes shine { 0%{left:-100%} 20%{left:100%} 100%{left:100%} }
         .premium-ad-card { position:relative; overflow:hidden; transition:all .4s ease; }
@@ -49,51 +49,53 @@
             background:linear-gradient(to right,transparent,rgba(255,255,255,.4),transparent);
             transform:skewX(-25deg); animation:shine 5s infinite;
         }
-        .premium-ad-card:hover { transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,82,255,.15); }
+        .premium-ad-card:hover { transform:translateY(-6px); box-shadow:0 20px 40px rgba(14,169,104,.15); }
 
-        .dark body                       { background-color:#0B1120 !important; color:#e2e8f0 !important; }
-        .dark main                       { background-color:#0B1120 !important; }
-        .dark main > div                 { background-color:#0B1120 !important; }
-        .dark #sidebar                   { background-color:#0f1729 !important; border-color:#1e2d45 !important; }
+        .dark body                       { background-color:#0A130F !important; color:#E4ECE7 !important; }
+        .dark main                       { background-color:#0A130F !important; }
+        .dark main > div                 { background-color:#0A130F !important; }
+        .dark #sidebar                   { background-color:#0E1813 !important; border-color:#1C2E24 !important; }
         .dark #sidebar h1                { color:#ffffff !important; }
-        .dark #sidebar a                 { color:#64748b !important; }
-        .dark #sidebar a.active-nav      { color:#ffffff !important; background-color:#0052FF !important; }
-        .dark #sidebar .border-slate-50  { border-color:#1e2d45 !important; }
-        .dark header                     { background-color:#0f1729 !important; border-color:#1e2d45 !important; }
-        .dark header span                { color:#e2e8f0 !important; }
+        .dark #sidebar a                 { color:#7C9388 !important; }
+        .dark #sidebar a.active-nav-pill { color:#34D399 !important; background-color:rgba(52,211,153,.12) !important; }
+        .dark #sidebar .border-slate-50  { border-color:#1C2E24 !important; }
+        .dark header                     { background-color:#0E1813 !important; border-color:#1C2E24 !important; }
+        .dark header span                { color:#E4ECE7 !important; }
         .dark header .font-black         { color:#ffffff !important; }
-        .dark header .bg-slate-50        { background-color:#1a2235 !important; border-color:#1e2d45 !important; }
-        .dark .card, .dark .card-lg      { background-color:#111827 !important; }
-        .dark .bg-white                  { background-color:#111827 !important; }
-        .dark .action-card               { background-color:#111827 !important; border-color:#1e2d45 !important; box-shadow:none !important; }
-        .dark .action-card p             { color:#94a3b8 !important; }
+        .dark header .bg-slate-50        { background-color:#152019 !important; border-color:#1C2E24 !important; }
+        .dark header .bg-emerald-50      { background-color:rgba(52,211,153,.10) !important; border-color:rgba(52,211,153,.18) !important; }
+        .dark .card, .dark .card-lg      { background-color:#101914 !important; }
+        .dark .bg-white                  { background-color:#101914 !important; }
+        .dark .action-card               { background-color:#101914 !important; box-shadow:none !important; border:1px solid #1C2E24; }
+        .dark .action-card p             { color:#7C9388 !important; }
+        .dark .action-icon               { background-color:rgba(255,255,255,.06) !important; }
         .dark h1, .dark h2, .dark h3     { color:#ffffff !important; }
-        .dark h4, .dark h5               { color:#64748b !important; }
-        .dark .text-slate-400            { color:#64748b !important; }
-        .dark .text-slate-500            { color:#64748b !important; }
-        .dark .text-\[#081B4B\]          { color:#e2e8f0 !important; }
+        .dark h4, .dark h5               { color:#7C9388 !important; }
+        .dark .text-slate-400            { color:#7C9388 !important; }
+        .dark .text-slate-500            { color:#7C9388 !important; }
+        .dark .text-\[#064E3B\]          { color:#E4ECE7 !important; }
         .dark .balance-num               { color:#ffffff !important; }
         .dark .border-slate-50,
-        .dark .border-slate-100          { border-color:#1e2d45 !important; }
-        .dark .bg-slate-50               { background-color:#1a2235 !important; }
-        .dark .bg-\[#F0F5FF\]            { background-color:rgba(0,82,255,.08) !important; border-color:rgba(0,82,255,.15) !important; }
-        .dark nav.fixed                  { background-color:#0f1729 !important; border-color:#1e2d45 !important; }
-        .dark .tx-label                  { color:#e2e8f0 !important; }
+        .dark .border-slate-100          { border-color:#1C2E24 !important; }
+        .dark .bg-slate-50               { background-color:#152019 !important; }
+        .dark .bg-\[#E7FBF0\]            { background-color:rgba(52,211,153,.08) !important; border-color:rgba(52,211,153,.15) !important; }
+        .dark nav.fixed                  { background-color:#0E1813 !important; border-color:#1C2E24 !important; }
+        .dark .tx-label                  { color:#E4ECE7 !important; }
         /* Referral banner dark mode */
         .refer-card                      { transition: background-color .2s, border-color .2s; }
-        .dark .refer-card                { background-color:#0d1f3c !important; border-color:#1e3560 !important; }
-        .dark .refer-card h5             { color:#60a5fa !important; }
+        .dark .refer-card                { background-color:#0F2419 !important; border-color:#1B4332 !important; }
+        .dark .refer-card h5             { color:#34d399 !important; }
         .dark .refer-card p.refer-title  { color:#ffffff !important; }
-        .dark .refer-card p.refer-body   { color:#64748b !important; }
+        .dark .refer-card p.refer-body   { color:#7C9388 !important; }
         /* Data bonus card dark mode */
-        .dark .bonus-card                { background-color:#111827 !important; }
-        .dark .bonus-card .bonus-icon    { background-color:#0d2050 !important; }
+        .dark .bonus-card                { background-color:#101914 !important; }
+        .dark .bonus-card .bonus-icon    { background-color:#13301F !important; }
         .dark .bonus-card .bonus-title   { color:#ffffff !important; }
-        .dark .bonus-card .bonus-sub     { color:#64748b !important; }
-        .dark .bonus-card .bonus-price   { color:#e2e8f0 !important; }
-        .dark .bonus-card .bonus-btn     { background-color:#0d2050 !important; color:#60a5fa !important; }
-        #page-body                       { background-color:#EEF2FF; }
-        .dark #page-body                 { background-color:#0B1120 !important; }
+        .dark .bonus-card .bonus-sub     { color:#7C9388 !important; }
+        .dark .bonus-card .bonus-price   { color:#E4ECE7 !important; }
+        .dark .bonus-card .bonus-btn     { background-color:#13301F !important; color:#34d399 !important; }
+        #page-body                       { background-color:#ECFDF5; }
+        .dark #page-body                 { background-color:#0A130F !important; }
     </style>
     <script src="theme.js"></script>
 </head>
@@ -105,22 +107,22 @@
 
         <aside id="sidebar" class="fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-slate-100 z-[90] flex flex-col p-6 -translate-x-full lg:translate-x-0 transition-transform duration-300">
             <div class="flex items-center gap-3 mb-10">
-                <div class="w-10 h-10 bg-[#0052FF] rounded-xl flex items-center justify-center text-white shadow-lg">
+                <div class="w-10 h-10 bg-[#0EA968] rounded-xl flex items-center justify-center text-white shadow-lg">
                     <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
                 </div>
-                <h1 class="text-lg font-extrabold tracking-tight italic text-[#081B4B]">Elite Data</h1>
+                <h1 class="text-lg font-extrabold tracking-tight italic text-[#064E3B]">ZApp</h1>
             </div>
-            <nav class="flex-1 space-y-1 overflow-y-auto no-scrollbar font-bold text-[13px]">
-                <a href="dashboard.html"   class="active-nav flex items-center gap-3 px-4 py-3 rounded-2xl">    <i data-lucide="layout-grid"  class="w-4 h-4"></i> Dashboard</a>
-                <a href="buy-data.html"    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Data</a>
-                <a href="buy-airtime.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="smartphone"    class="w-4 h-4"></i> Airtime Top-up</a>
-                <a href="cable-tv.html"    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="tv"            class="w-4 h-4"></i> Cable TV</a>
-                <a href="electricity.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="zap"           class="w-4 h-4"></i> Electricity</a>
-                <a href="history.html"     class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="history"        class="w-4 h-4"></i> History</a>
-                <a href="fund-wallet.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="wallet"         class="w-4 h-4"></i> Wallet</a>
-                <a href="referrals.html"   class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="users"          class="w-4 h-4"></i> Referrals</a>
-                <a href="support.html"     class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="headset"         class="w-4 h-4"></i> Support</a>
-                <a href="settings.html"    class="flex items-center gap-3 px-4 py-3 rounded-2xl text-slate-400"><i data-lucide="settings"        class="w-4 h-4"></i> Settings</a>
+            <nav class="flex-1 space-y-1.5 overflow-y-auto no-scrollbar font-bold text-[13px]">
+                <a href="dashboard.html"   class="nav-link active-nav-pill flex items-center gap-3 px-4 py-3 rounded-xl">    <i data-lucide="layout-grid"  class="w-4 h-4"></i> Dashboard</a>
+                <a href="buy-data.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Data</a>
+                <a href="buy-airtime.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="smartphone"    class="w-4 h-4"></i> Airtime Top-up</a>
+                <a href="cable-tv.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="tv"            class="w-4 h-4"></i> Cable TV</a>
+                <a href="electricity.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="zap"           class="w-4 h-4"></i> Electricity</a>
+                <a href="history.html"     class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="history"        class="w-4 h-4"></i> History</a>
+                <a href="fund-wallet.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="wallet"         class="w-4 h-4"></i> Wallet</a>
+                <a href="referrals.html"   class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="users"          class="w-4 h-4"></i> Referrals</a>
+                <a href="support.html"     class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="headset"         class="w-4 h-4"></i> Support</a>
+                <a href="settings.html"    class="nav-link flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400"><i data-lucide="settings"        class="w-4 h-4"></i> Settings</a>
                 <div id="admin-link-container" class="hidden pt-4 border-t border-slate-50 mt-4">
                     <a href="admin.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-black text-purple-600 bg-purple-50">
                         <i data-lucide="shield-check" class="w-4 h-4"></i> Admin Panel
@@ -138,43 +140,47 @@
 
             <header class="lg:hidden bg-white px-5 py-4 flex justify-between items-center border-b border-slate-100 sticky top-0 z-[60] shadow-sm">
                 <button onclick="toggleMenu()" class="w-9 h-9 flex items-center justify-center">
-                    <i data-lucide="menu" class="w-5 h-5 text-[#081B4B]"></i>
+                    <i data-lucide="menu" class="w-5 h-5 text-[#064E3B]"></i>
                 </button>
-                <span class="font-extrabold text-sm text-[#0052FF] tracking-wide">Elite Data Services</span>
-                <button onclick="toggleTheme()" class="w-10 h-10 bg-[#1e293b] rounded-xl flex items-center justify-center">
-                    <i data-lucide="moon" class="w-4 h-4 text-slate-300 dark:hidden"></i>
+                <span class="font-extrabold text-sm text-[#0EA968] tracking-wide">ZApp</span>
+                <button onclick="toggleTheme()" class="w-10 h-10 bg-[#13231b] rounded-xl flex items-center justify-center">
+                    <i data-lucide="moon" class="w-4 h-4 text-emerald-300 dark:hidden"></i>
                     <i data-lucide="sun"  class="hidden dark:block w-4 h-4 text-yellow-400"></i>
                 </button>
             </header>
 
             <header class="hidden lg:flex bg-white border-b border-slate-100 px-10 py-5 justify-between items-center sticky top-0 z-50">
-                <div class="font-bold text-sm text-[#081B4B]">Welcome back, <span id="user-name-desktop" class="font-extrabold text-lg">Loading...</span></div>
+                <div class="flex items-center gap-3">
+                    <img src="https://i.pravatar.cc/100" class="w-10 h-10 rounded-2xl border border-slate-200 object-cover">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Welcome back</p>
+                        <div id="user-name-desktop" class="font-extrabold text-base text-[#064E3B] leading-none">Loading...</div>
+                    </div>
+                </div>
                 <div class="flex items-center gap-5">
-                    <button onclick="toggleTheme()" class="w-10 h-10 bg-[#1e293b] rounded-xl flex items-center justify-center">
-                        <i data-lucide="moon" class="w-4 h-4 text-slate-300 dark:hidden"></i>
+                    <button onclick="toggleTheme()" class="w-10 h-10 bg-[#13231b] rounded-xl flex items-center justify-center">
+                        <i data-lucide="moon" class="w-4 h-4 text-emerald-300 dark:hidden"></i>
                         <i data-lucide="sun"  class="hidden dark:block w-4 h-4 text-yellow-400"></i>
                     </button>
-                    <div class="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Balance</span>
-                        <span class="text-sm font-black text-[#081B4B]">₦<span id="user-balance-desktop" class="balance-num">0.00</span></span>
-                        <a href="fund-wallet.html"><i data-lucide="plus-circle" class="w-5 h-5 text-[#0052FF]"></i></a>
+                    <div class="flex items-center gap-3 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">
+                        <span class="text-[10px] font-bold text-[#0EA968] uppercase tracking-widest">Balance</span>
+                        <span class="text-sm font-black text-[#064E3B]">₦<span id="user-balance-desktop" class="balance-num">0.00</span></span>
+                        <a href="fund-wallet.html"><i data-lucide="plus-circle" class="w-5 h-5 text-[#0EA968]"></i></a>
                     </div>
-                    <img src="https://i.pravatar.cc/100" class="w-9 h-9 rounded-full border border-slate-200">
                 </div>
             </header>
 
             <div id="page-body" class="w-full pb-32 overflow-y-auto flex-1">
 
-                <div class="lg:hidden bg-[#0052FF] px-6 pt-6 pb-24 text-white rounded-b-[40px] flex justify-between items-center">
-                    <div class="flex-1">
-                        <p class="text-blue-200 text-[10px] font-bold uppercase mb-1 tracking-widest">Welcome back,</p>
-                        <h2 class="text-2xl font-black text-white tracking-wide" id="user-name-mobile">Loading...</h2>
-                    </div>
-                    <div class="phone-container">
-                        <div class="phone-handset"><div class="phone-display"></div></div>
-                        <div class="tile tile-data"><i data-lucide="wifi"></i><span>Data</span></div>
-                        <div class="tile tile-airtime"><i data-lucide="wallet"></i><span>Airtime</span></div>
-                        <div class="tile tile-tv"><i data-lucide="tv"></i><span>TV</span></div>
+                <div class="lg:hidden relative overflow-hidden bg-gradient-to-br from-[#0EA968] to-[#0B7A4A] px-6 pt-7 pb-24 text-white rounded-b-[40px]">
+                    <div class="blob-a absolute -top-12 -right-10 w-44 h-44 bg-white/10 rounded-full"></div>
+                    <div class="blob-b absolute bottom-2 -left-10 w-32 h-32 bg-white/10 rounded-full"></div>
+                    <div class="relative z-10 flex justify-between items-center">
+                        <div class="flex-1">
+                            <p class="text-emerald-100 text-[10px] font-bold uppercase mb-1 tracking-widest">Welcome back,</p>
+                            <h2 class="text-2xl font-black text-white tracking-wide" id="user-name-mobile">Loading...</h2>
+                        </div>
+                        <img src="https://i.pravatar.cc/100" class="greet-avatar">
                     </div>
                 </div>
 
@@ -183,25 +189,25 @@
                     <div class="lg:hidden card-lg relative z-20 -mt-16 p-8 flex flex-col items-center">
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Available Balance</p>
                         <div class="flex items-center gap-3 mb-6">
-                            <h3 class="text-3xl font-black text-[#081B4B] balance-num">₦<span id="user-balance-mobile">0.00</span></h3>
+                            <h3 class="text-3xl font-black text-[#064E3B] balance-num">₦<span id="user-balance-mobile">0.00</span></h3>
                             <button onclick="toggleBalance()">
                                 <i id="eye-icon-mobile" data-lucide="eye-off" class="w-5 h-5 text-slate-400"></i>
                             </button>
                         </div>
                         <div class="flex gap-3 w-full">
-                            <a href="fund-wallet.html" class="flex-1 bg-[#0052FF] text-white py-3 rounded-full font-extrabold text-xs text-center shadow-lg active:scale-95 transition-all">+ Fund Wallet</a>
+                            <a href="fund-wallet.html" class="flex-1 bg-[#0EA968] text-white py-3 rounded-full font-extrabold text-xs text-center shadow-lg active:scale-95 transition-all">+ Fund Wallet</a>
                             <a href="withdraw-bank.html" class="flex-1 bg-slate-50 text-slate-500 py-3 rounded-full font-extrabold text-xs text-center border border-slate-100 active:scale-95 transition-all">Withdraw</a>
                         </div>
                     </div>
 
                     <div class="lg:hidden mt-6">
-                        <a href="referrals.html" class="refer-card block bg-[#F0F5FF] p-6 rounded-[28px] relative overflow-hidden group border border-blue-50">
+                        <a href="referrals.html" class="refer-card block bg-[#E7FBF0] p-6 rounded-[28px] relative overflow-hidden group border border-emerald-50">
                             <div class="relative z-10">
-                                <h5 class="font-extrabold text-[11px] mb-1 uppercase tracking-tight text-[#0052FF]">Invite & Earn</h5>
-                                <p class="refer-title text-[15px] font-black text-[#081B4B]">Get ₦1,000 instantly!</p>
-                                <p class="refer-body text-[10px] text-slate-500 font-medium max-w-[220px] mt-1">Refer your friends to Elite Data and earn bonus when they fund their wallet.</p>
+                                <h5 class="font-extrabold text-[11px] mb-1 uppercase tracking-tight text-[#0EA968]">Invite & Earn</h5>
+                                <p class="refer-title text-[15px] font-black text-[#064E3B]">Get ₦1,000 instantly!</p>
+                                <p class="refer-body text-[10px] text-slate-500 font-medium max-w-[220px] mt-1">Refer your friends to ZApp and earn bonus when they fund their wallet.</p>
                             </div>
-                            <i data-lucide="gift" class="w-20 h-20 absolute -right-4 -bottom-4 text-[#0052FF]/10 transition-transform group-hover:scale-110"></i>
+                            <i data-lucide="gift" class="w-20 h-20 absolute -right-4 -bottom-4 text-[#0EA968]/10 transition-transform group-hover:scale-110"></i>
                         </a>
                     </div>
 
@@ -212,24 +218,36 @@
                             <section>
                                 <div class="flex justify-between items-center mb-4">
                                     <h4 class="font-bold tracking-widest text-xs uppercase text-slate-400">Quick Actions</h4>
-                                    <a href="#" class="text-[10px] font-bold text-[#0052FF]">View all</a>
+                                    <a href="#" class="text-[10px] font-bold text-[#0EA968]">View all</a>
                                 </div>
                                 <div class="grid grid-cols-4 gap-3">
-                                    <a href="buy-data.html"    class="action-card"><i data-lucide="wifi"  class="w-6 h-6 text-[#0052FF] mb-2"></i><p class="text-[9px] font-bold uppercase text-slate-500">Data</p></a>
-                                    <a href="buy-airtime.html" class="action-card"><i data-lucide="phone" class="w-6 h-6 text-green-500 mb-2"></i><p class="text-[9px] font-bold uppercase text-slate-500">Airtime</p></a>
-                                    <a href="cable-tv.html"    class="action-card"><i data-lucide="tv"    class="w-6 h-6 text-purple-500 mb-2"></i><p class="text-[9px] font-bold uppercase text-slate-500">Cable TV</p></a>
-                                    <a href="electricity.html" class="action-card"><i data-lucide="zap"   class="w-6 h-6 text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase text-slate-500">Power</p></a>
+                                    <a href="buy-data.html"    class="action-card">
+                                        <div class="action-icon bg-emerald-50 text-[#0EA968]"><i data-lucide="wifi" class="w-5 h-5"></i></div>
+                                        <p class="text-[9px] font-bold uppercase text-slate-500 mt-2">Data</p>
+                                    </a>
+                                    <a href="buy-airtime.html" class="action-card">
+                                        <div class="action-icon bg-amber-50 text-amber-500"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                                        <p class="text-[9px] font-bold uppercase text-slate-500 mt-2">Airtime</p>
+                                    </a>
+                                    <a href="cable-tv.html"    class="action-card">
+                                        <div class="action-icon bg-purple-50 text-purple-500"><i data-lucide="tv" class="w-5 h-5"></i></div>
+                                        <p class="text-[9px] font-bold uppercase text-slate-500 mt-2">Cable TV</p>
+                                    </a>
+                                    <a href="electricity.html" class="action-card">
+                                        <div class="action-icon bg-orange-50 text-orange-500"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                                        <p class="text-[9px] font-bold uppercase text-slate-500 mt-2">Power</p>
+                                    </a>
                                 </div>
                             </section>
 
                             <section>
                                 <div class="flex justify-between items-center mb-4">
                                     <h4 class="font-bold tracking-widest text-xs uppercase text-slate-400">First Time Data Bonus</h4>
-                                    <a href="buy-data.html" class="text-[10px] font-bold text-[#0052FF]">View all</a>
+                                    <a href="buy-data.html" class="text-[10px] font-bold text-[#0EA968]">View all</a>
                                 </div>
                                 <div class="bonus-card card p-5 flex items-center justify-between">
                                     <div class="flex items-center gap-4">
-                                        <div class="bonus-icon w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-[#0052FF]">
+                                        <div class="bonus-icon w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-[#0EA968]">
                                             <i data-lucide="wifi" class="w-5 h-5"></i>
                                         </div>
                                         <div>
@@ -238,8 +256,8 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-4">
-                                        <span class="bonus-price font-black text-sm text-[#081B4B] balance-num">₦1,500</span>
-                                        <a href="buy-data.html" class="bonus-btn bg-blue-50 text-[#0052FF] px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-blue-100 transition-all">Buy</a>
+                                        <span class="bonus-price font-black text-sm text-[#064E3B] balance-num">₦1,500</span>
+                                        <a href="buy-data.html" class="bonus-btn bg-emerald-50 text-[#0EA968] px-4 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-emerald-100 transition-all">Buy</a>
                                     </div>
                                 </div>
                             </section>
@@ -247,23 +265,23 @@
                             <section>
                                 <div class="flex justify-between items-center mb-4">
                                     <h4 class="font-bold tracking-widest text-xs uppercase text-slate-400">Featured Partner</h4>
-                                    <span class="bg-blue-50 text-[#0052FF] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Sponsored</span>
+                                    <span class="bg-emerald-50 text-[#0EA968] text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter">Sponsored</span>
                                 </div>
-                                <div class="premium-ad-card rounded-[32px] overflow-hidden bg-[#081B4B] shadow-2xl flex flex-col md:flex-row h-auto md:h-64 border border-white/5 group">
+                                <div class="premium-ad-card rounded-[32px] overflow-hidden bg-[#064E3B] shadow-2xl flex flex-col md:flex-row h-auto md:h-64 border border-white/5 group">
                                     <div class="w-full md:w-1/2 h-52 md:h-full relative overflow-hidden">
                                         <img src="https://github.com/Mystick682/Elite-Data-Hub/blob/main/promo.jpg?raw=true" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Promo">
-                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#081B4B]/20 to-[#081B4B]"></div>
-                                        <div class="absolute inset-0 bg-gradient-to-t from-[#081B4B] md:from-transparent to-transparent"></div>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-[#064E3B]/20 to-[#064E3B]"></div>
+                                        <div class="absolute inset-0 bg-gradient-to-t from-[#064E3B] md:from-transparent to-transparent"></div>
                                     </div>
                                     <div class="p-8 md:p-10 flex flex-col justify-center flex-1 relative z-10">
                                         <div class="mb-4">
                                             <h3 class="text-white text-2xl lg:text-3xl font-black tracking-tighter leading-none mb-2">Toyeen Travels & Shortlets</h3>
-                                            <div class="h-1 w-12 bg-[#0052FF] rounded-full"></div>
+                                            <div class="h-1 w-12 bg-[#0EA968] rounded-full"></div>
                                         </div>
-                                        <p class="text-blue-200 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">Your Journey, Your Stay, Our Priority!</p>
+                                        <p class="text-emerald-200 text-[10px] font-bold uppercase tracking-[0.2em] mb-4">Your Journey, Your Stay, Our Priority!</p>
                                         <p class="text-slate-400 text-xs leading-relaxed mb-8 max-w-xs font-medium">Global Flight Bookings, Expert Visa Consultations, and Luxury Shortlet Apartments.</p>
                                         <div>
-                                            <a href="https://wa.me/2347011234567" target="_blank" class="bg-[#0052FF] text-white px-8 py-3 rounded-2xl font-black text-xs shadow-xl shadow-blue-500/20 hover:bg-blue-600 active:scale-95 transition-all inline-block">Book Now</a>
+                                            <a href="https://wa.me/2347011234567" target="_blank" class="bg-[#0EA968] text-white px-8 py-3 rounded-2xl font-black text-xs shadow-xl shadow-emerald-500/20 hover:bg-emerald-600 active:scale-95 transition-all inline-block">Book Now</a>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +290,7 @@
                             <section>
                                 <div class="flex justify-between items-center mb-4">
                                     <h4 class="font-bold tracking-widest text-xs uppercase text-slate-400">Recent Transactions</h4>
-                                    <a href="history.html" class="text-[10px] font-bold text-[#0052FF]">View all</a>
+                                    <a href="history.html" class="text-[10px] font-bold text-[#0EA968]">View all</a>
                                 </div>
                                 <div id="transaction-list" class="card-lg p-6 space-y-5">
                                     <p class="text-xs text-slate-400 text-center py-4 uppercase font-bold tracking-widest opacity-40">No transactions found.</p>
@@ -284,19 +302,19 @@
                         <aside class="hidden lg:block lg:col-span-4 space-y-6">
                             <div class="card-lg p-8 flex flex-col items-center">
                                 <p class="text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-widest">Total Balance</p>
-                                <h3 class="text-3xl font-black text-[#081B4B] balance-num mb-6">₦<span id="user-balance-desktop-side">0.00</span></h3>
+                                <h3 class="text-3xl font-black text-[#064E3B] balance-num mb-6">₦<span id="user-balance-desktop-side">0.00</span></h3>
                                 <div class="flex gap-2 w-full">
-                                    <a href="fund-wallet.html"  class="flex-1 bg-[#0052FF] text-white py-3 rounded-full font-bold text-[10px] text-center shadow-lg hover:bg-blue-700 transition-all">+ Fund</a>
+                                    <a href="fund-wallet.html"  class="flex-1 bg-[#0EA968] text-white py-3 rounded-full font-bold text-[10px] text-center shadow-lg hover:bg-emerald-700 transition-all">+ Fund</a>
                                     <a href="withdraw-bank.html" class="flex-1 bg-slate-50 text-slate-400 py-3 rounded-full font-bold text-[10px] text-center border border-slate-100 transition-all">Withdraw</a>
                                 </div>
                             </div>
-                            <a href="referrals.html" class="refer-card block bg-[#F0F5FF] p-8 rounded-[28px] relative overflow-hidden group border border-blue-50">
+                            <a href="referrals.html" class="refer-card block bg-[#E7FBF0] p-8 rounded-[28px] relative overflow-hidden group border border-emerald-50">
                                 <div class="relative z-10">
-                                    <h5 class="font-extrabold text-xs mb-1 uppercase tracking-tight text-[#0052FF]">Invite & Earn</h5>
-                                    <p class="refer-title text-xl font-black text-[#081B4B] mb-2">Get ₦1,000 per Referral!</p>
-                                    <p class="refer-body text-xs text-slate-500 font-medium max-w-[220px]">Refer friends to Elite Data and earn bonus when they fund their wallet.</p>
+                                    <h5 class="font-extrabold text-xs mb-1 uppercase tracking-tight text-[#0EA968]">Invite & Earn</h5>
+                                    <p class="refer-title text-xl font-black text-[#064E3B] mb-2">Get ₦1,000 per Referral!</p>
+                                    <p class="refer-body text-xs text-slate-500 font-medium max-w-[220px]">Refer friends to ZApp and earn bonus when they fund their wallet.</p>
                                 </div>
-                                <i data-lucide="gift" class="w-24 h-24 absolute -right-4 -bottom-4 text-[#0052FF]/10 transition-transform group-hover:scale-110"></i>
+                                <i data-lucide="gift" class="w-24 h-24 absolute -right-4 -bottom-4 text-[#0EA968]/10 transition-transform group-hover:scale-110"></i>
                             </a>
                         </aside>
 
@@ -305,7 +323,7 @@
             </div>
 
             <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-100 flex justify-around p-4 z-50 shadow-lg">
-                <a href="dashboard.html"   class="flex flex-col items-center gap-1 text-[#0052FF]"><i data-lucide="home"     class="w-5 h-5"></i><span class="text-[8px] font-black uppercase">Home</span></a>
+                <a href="dashboard.html"   class="flex flex-col items-center gap-1 text-[#0EA968]"><i data-lucide="home"     class="w-5 h-5"></i><span class="text-[8px] font-black uppercase">Home</span></a>
                 <a href="history.html"     class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="history"  class="w-5 h-5"></i><span class="text-[8px] font-black uppercase">History</span></a>
                 <a href="fund-wallet.html" class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="wallet"   class="w-5 h-5"></i><span class="text-[8px] font-black uppercase">Wallet</span></a>
                 <a href="settings.html"    class="flex flex-col items-center gap-1 text-slate-300"><i data-lucide="settings" class="w-5 h-5"></i><span class="text-[8px] font-black uppercase">Settings</span></a>
@@ -327,7 +345,7 @@
 
                 const { data: profile } = await _supabase.from('profiles').select('full_name, is_admin').eq('id', uid).single();
                 if (profile) {
-                    const n = (profile.full_name || 'Elite Member') + ' ';
+                    const n = (profile.full_name || 'ZApp Member') + ' ';
                     document.getElementById('user-name-mobile').innerText = n;
                     document.getElementById('user-name-desktop').innerText = n;
                     if (profile.is_admin === true) {
@@ -348,15 +366,15 @@
                         list.innerHTML += `
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 ${isFunding ? 'bg-blue-50 text-[#0052FF]' : 'bg-green-50 text-green-600'} rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <div class="w-10 h-10 ${isFunding ? 'bg-emerald-50 text-[#0EA968]' : 'bg-green-50 text-green-600'} rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i data-lucide="${isFunding ? 'plus' : 'arrow-down-left'}" class="w-4 h-4"></i>
                                     </div>
                                     <div>
-                                        <p class="tx-label font-bold text-[13px] uppercase text-[#081B4B]">${t.type}</p>
+                                        <p class="tx-label font-bold text-[13px] uppercase text-[#064E3B]">${t.type}</p>
                                         <p class="text-[9px] text-slate-400 font-bold uppercase">${new Date(t.created_at).toLocaleDateString()}</p>
                                     </div>
                                 </div>
-                                <p class="font-black text-sm ${isFunding ? 'text-[#0052FF]' : 'text-green-600'}">${isFunding ? '+' : '-'}₦${parseFloat(t.amount).toLocaleString()}</p>
+                                <p class="font-black text-sm ${isFunding ? 'text-[#0EA968]' : 'text-green-600'}">${isFunding ? '+' : '-'}₦${parseFloat(t.amount).toLocaleString()}</p>
                             </div>`;
                     });
                     lucide.createIcons();
